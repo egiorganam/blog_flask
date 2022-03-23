@@ -15,14 +15,10 @@ db = SQLAlchemy(app)
 
 from models import User, Post
 
-
-# me salvo la vida 🙌🏼
+"""#      🙌🏼
 @app.before_first_request
 def create_tables():
-    db.create_all()
-
-
-#
+    db.create_all() #"""
 
 
 @app.route('/')
@@ -31,27 +27,27 @@ def index():
     return render_template('index.html', posts=posts)
 
 
-@app.route('/post/<string:slug>/')
+@app.route('/p/<string:slug>/')
 def show_post(slug):
     post = Post.get_by_slug(slug)
     if post is None:
         print(f'Error 404')
     return render_template("post_view.html", post=post)
 
-"""HAY UN ERROR EN ESTA RUTA HAY QUE SOLUCIONAR """
-@app.route('/admin/post/', methods=['GET', 'POST'], defaults={'post_id': None})
-@app.route('/admin/post/<int:post_id>/', methods=['GET', 'POST'])
+
+@app.route("/admin/post/", methods=['GET', 'POST'], defaults={'post_id': None})
+@app.route("/admin/post/<int:post_id>/", methods=['GET', 'POST'])
 @login_required
 def post_form(post_id):
     form = PostForm()
-
     if form.validate_on_submit():
         title = form.title.data
         content = form.content.data
+
         post = Post(user_id=current_user.id, title=title, content=content)
         post.save()
-        return redirect(url_for('index'))
 
+        return redirect(url_for('index'))
     return render_template("admin/post_form.html", form=form)
 
 
